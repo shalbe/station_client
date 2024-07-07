@@ -1,15 +1,33 @@
 class ApiUrls {
-  static String BASE_URL = 'https://coddaddy.com/company/public/api/v1/';
-  // static String BASE_URL = 'https://bspc-it.com/kalde/public/api/v1/';
+  static String BASE_URL = 'https://bspc-it.com/station/public/api/v1/';
   static String LOGIN_URL = 'auth/client/login';
   static String REGISTER_URL = 'auth/client/register';
   static String USER_DATA_URL = 'auth/client/user-profile';
+  static String SETTING_URL = 'auth/client/setting';
+  static String MESSAGE_URL = 'client/dashboard/message';
+  static String ALL_MESSAGE_URL = 'client/dashboard/all-message';
+  static String CASH_ORDER_URL = 'client/dashboard/cash-orders';
+  static String DEBIT_ORDER_URL = 'client/dashboard/debit-orders';
+  static String PAYMENTS_URL = 'client/dashboard/payments';
+  static String CLIENT_CAR_URL = 'client/dashboard/client-car';
 
   // Top Sales
   static String TOP_SALES_URL = 'client/client-top-ten';
 
   // Total Sales
   static String TOTAL_SALES_URL = 'shop/shop-total-sell';
+  static String All_SALES_URL = 'client/dashboard/all-sales';
+  static String All_SALES_TO_DAY_URL = 'client/dashboard/all-sales-to-day';
+  static String STILL_DEBIT_URL = 'client/dashboard/still-debit';
+  static String ALL_CASH_SALES_URL = 'client/dashboard/all-cash-sales';
+  static String ALL_CASH_SALES_TO_DAY_URL =
+      'client/dashboard/all-cash-sales-to-day';
+  static String ALL_DEBIT_SALES_URL = 'client/dashboard/all-debit-sales';
+  static String ALL_DEBIT_SALES_TO_DAY_URL =
+      'client/dashboard/all-debit-sales-to-day';
+  static String ALL_PAYMENTS_URL = 'client/dashboard/all-payments';
+  static String ALL_PAYMENTS_TO_DAY_URL =
+      'client/dashboard/all-payments-to-day';
 
   // CITIES
   static String CITIES_URL = 'auth/client/cities';

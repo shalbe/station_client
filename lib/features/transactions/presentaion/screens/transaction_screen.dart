@@ -36,24 +36,25 @@ class Transactions extends StatelessWidget {
                               image: AssetImage(
                                   'assets/images/Rectangle 225@2x.png'))),
                     ),
-                    cubit.allSales.isEmpty
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(Icons.share_location_sharp),
-                                SizedBox(
-                                  height: 10.h,
-                                ),
-                                defaultText(
-                                    txt: 'لا توجد اي مبيعات',
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold)
-                              ],
-                            ),
-                          )
-                        : Padding(
+                    // cubit.allSales.isEmpty
+                    //     ? Center(
+                    //         child: Column(
+                    //           mainAxisAlignment: MainAxisAlignment.center,
+                    //           crossAxisAlignment: CrossAxisAlignment.center,
+                    //           children: [
+                    //             Icon(Icons.share_location_sharp),
+                    //             SizedBox(
+                    //               height: 10.h,
+                    //             ),
+                    //             defaultText(
+                    //                 txt: 'لا توجد اي مبيعات',
+                    //                 fontSize: 14.sp,
+                    //                 fontWeight: FontWeight.bold)
+                    //           ],
+                    //         ),
+                    //       )
+                    //     : 
+                        Padding(
                             padding: EdgeInsets.only(
                                 top: 80.h, left: 12.w, right: 12.w),
                             child: SingleChildScrollView(
@@ -106,9 +107,10 @@ class Transactions extends StatelessWidget {
                                                             Column(
                                                               children: [
                                                                 defaultText(
-                                                                    txt: cubit.allSales[index].price!
-                                                                        .toStringAsFixed(
-                                                                            2),
+                                                                    txt:'00000',
+                                                                    //  cubit.allSales[index].price!
+                                                                    //     .toStringAsFixed(
+                                                                    //         2),
                                                                     color: Colors
                                                                         .red,
                                                                     fontSize: 14
@@ -116,11 +118,7 @@ class Transactions extends StatelessWidget {
                                                                     fontWeight:
                                                                         FontWeight.bold),
                                                                 defaultText(
-                                                                    txt: cubit
-                                                                        .allSales[
-                                                                            index]
-                                                                        .date
-                                                                        .toString(),
+                                                                    txt:'0000',
                                                                     fontSize: 12
                                                                         .sp,
                                                                     fontWeight:
@@ -133,11 +131,12 @@ class Transactions extends StatelessWidget {
                                                             Column(
                                                               children: [
                                                                 defaultText(
-                                                                    txt: cubit
-                                                                        .allSales[
-                                                                            index]
-                                                                        .clientName
-                                                                        .toString(),
+                                                                    txt:'0000',
+                                                                    //  cubit
+                                                                    //     .allSales[
+                                                                    //         index]
+                                                                    //     .clientName
+                                                                    //     .toString(),
                                                                     fontSize: 16
                                                                         .sp,
                                                                     fontWeight:
@@ -183,7 +182,7 @@ class Transactions extends StatelessWidget {
                                             SizedBox(
                                               height: 12,
                                             ),
-                                        itemCount: cubit.allSales.length),
+                                        itemCount: 3),
                                   )
                                 ],
                               ),

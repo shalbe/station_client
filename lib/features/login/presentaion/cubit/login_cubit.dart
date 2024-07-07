@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:system_shop/core/componant/componant.dart';
 import 'package:system_shop/core/const/const.dart';
 import 'package:system_shop/core/database/cache/cache_helper.dart';
+import 'package:system_shop/features/home/presentaion/screens/home.dart';
 import 'package:system_shop/features/home_page/presentaion/screens/home_screen.dart';
 import 'package:system_shop/features/login/data/data_source/remote_data_source.dart';
 import 'package:system_shop/features/login/data/models/login_model.dart';
@@ -33,7 +34,7 @@ class LoginCubit extends Cubit<LoginStates> {
           await CacheHelper.setShared(
               key: AppConst.kLogin, value: user.accessToken);
           uid = CacheHelper.getShared(key: AppConst.kLogin);
-          nextPageUntil(context, HomeScreen());
+          nextPageUntil(context, Home());
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(
@@ -42,6 +43,7 @@ class LoginCubit extends Cubit<LoginStates> {
         }
         emit(LoginSuccess());
       } catch (er) {
+        print(er.toString());
         emit(LoginError());
       }
     }

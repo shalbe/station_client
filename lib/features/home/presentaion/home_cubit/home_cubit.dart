@@ -7,7 +7,12 @@ import 'package:system_shop/core/database/api/dio_consumer.dart';
 import 'package:system_shop/core/database/api/end_point.dart';
 import 'package:system_shop/features/home/data/data_source/home_remote_data_source.dart';
 import 'package:system_shop/features/home/data/model/add_fund.dart';
+import 'package:system_shop/features/home/data/model/app_settings.dart';
+import 'package:system_shop/features/home/data/model/cach_order.dart';
 import 'package:system_shop/features/home/data/model/company_model.dart';
+import 'package:system_shop/features/home/data/model/get_client_car.dart';
+import 'package:system_shop/features/home/data/model/get_payment_order.dart';
+import 'package:system_shop/features/home/data/model/latest_notifications.dart';
 import 'package:system_shop/features/home/data/model/return_fund.dart';
 import 'package:system_shop/features/home/data/model/scan_client.dart';
 import 'package:system_shop/features/home/data/model/top_sales.dart';
@@ -23,11 +28,31 @@ import 'package:system_shop/main.dart';
 class HomePageCubit extends Cubit<HomeState> {
   HomePageCubit() : super(IntitialHomeStates());
   static HomePageCubit get(context) => BlocProvider.of(context);
-  List<TopSalesData> salesData = [];
+  List<MessageData> message = [];
+  List<MessageData> AllMessage = [];
+  List<CashorderData> cashOrder = [];
+  List<CashorderData> debitOrder = [];
+  List<PaymentOrderData> paymentOrder = [];
+  List<ClientCarData> carData = [];
   List<CompanyData> companyList = [];
   UserProfile? userData;
   double count = 0.0;
   GetTotalShopSales? totalSales;
+
+  double totalSalesInDay = 0;
+  double totalSaless = 0;
+  double stillDebit = 0;
+  double allCashSales = 0;
+  double allCashSalesToDay = 0.0;
+  double allDebitSales = 0;
+  double allDebitSalesToDay = 0;
+  double allPayments = 0;
+  double allPaymentsToDay = 0;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController name = TextEditingController();
+
+  AppSettings? appSettings;
 //  User data
 
   getUserData() async {
@@ -40,6 +65,20 @@ class HomePageCubit extends Cubit<HomeState> {
       if (kDebugMode) {
         print('error');
         emit(GetUserDataError());
+      }
+    }
+  }
+
+  getSettingsData() async {
+    try {
+      emit(GetSettingsDataLoading());
+      var data = await HomeServices.getSettingsData();
+      appSettings = data;
+      emit(GetSettingsDataSucsses());
+    } catch (e) {
+      if (kDebugMode) {
+        print('error');
+        emit(GetSettingsDataError());
       }
     }
   }
@@ -58,21 +97,86 @@ class HomePageCubit extends Cubit<HomeState> {
     });
   }
 
-  getTopSales() async {
-    emit(GetTopSalesLoading());
-    var sales = await HomeServices.getTopSales();
+  getLatestMessage() async {
+    emit(GetlatestMessageLoading());
+    var sales = await HomeServices.getLatestNotification();
     if (sales?.status == true) {
-      salesData = sales?.data ?? [];
-      emit(GetTopSalesSucsses());
+      message = sales?.data ?? [];
+      emit(GetlatestMessageSucsses());
     } else if (sales?.status == false) {
-      emit(GetTopSalesError());
+      emit(GetlatestMessageError());
+    } else {
+      emit(GetTopSalesFailed());
+    }
+  }
+
+  getAllMessage() async {
+    emit(GetAllMessageLoading());
+    var sales = await HomeServices.getAllNotification();
+    if (sales?.status == true) {
+      AllMessage = sales?.data ?? [];
+      emit(GetAllMessageSucsses());
+    } else if (sales?.status == false) {
+      emit(GetAllMessageError());
+    } else {
+      emit(GetTopSalesFailed());
+    }
+  }
+
+  getCashOrder() async {
+    emit(GetCashOrderLoading());
+    var sales = await HomeServices.getCashOrder();
+    if (sales?.status == true) {
+      cashOrder = sales?.data ?? [];
+      emit(GetCashOrderSucsses());
+    } else if (sales?.status == false) {
+      emit(GetCashOrderError());
+    } else {
+      emit(GetTopSalesFailed());
+    }
+  }
+
+  getDebitOrder() async {
+    emit(GetDebitOrderLoading());
+    var sales = await HomeServices.getDebitOrder();
+    if (sales?.status == true) {
+      debitOrder = sales?.data ?? [];
+      emit(GetDebitOrderSucsses());
+    } else if (sales?.status == false) {
+      emit(GetDebitOrderError());
+    } else {
+      emit(GetTopSalesFailed());
+    }
+  }
+
+  getPaymentOrder() async {
+    emit(GetDebitOrderLoading());
+    var sales = await HomeServices.getPaymentsOrder();
+    if (sales?.status == true) {
+      paymentOrder = sales?.data ?? [];
+      emit(GetDebitOrderSucsses());
+    } else if (sales?.status == false) {
+      emit(GetDebitOrderError());
+    } else {
+      emit(GetTopSalesFailed());
+    }
+  }
+
+  getClientCar() async {
+    emit(GetClientCarLoading());
+    var sales = await HomeServices.getClientCar();
+    if (sales?.status == true) {
+      carData = sales?.data ?? [];
+      emit(GetClientCarSucsses());
+    } else if (sales?.status == false) {
+      emit(GetClientCarError());
     } else {
       emit(GetTopSalesFailed());
     }
   }
 
   getCompanyList() async {
-    emit(GetTopSalesLoading());
+    emit(GetlatestMessageLoading());
     var List = await HomeServices.getCompanyData();
     if (List?.status == true) {
       companyList = List?.data ?? [];
@@ -94,6 +198,23 @@ class HomePageCubit extends Cubit<HomeState> {
     DioHelper.postData(path: ApiUrls.SCAN_CLIENT_URL, data: formData)
         .then((value) {
       scanClientById = ScanClientById.fromJson(value.data);
+
+      getAllCashCount();
+      getLatestMessage();
+      getSettingsData();
+      getCachInDayCount();
+      getAllSalesCount();
+      getStillDebitCount();
+      getAllDebitInDayCount();
+      getAllPaymentInDayCount();
+      getAllPaymentCount();
+      getClientCar();
+      getAllDebitCount();
+      getAllMessage();
+      getCashOrder();
+      getPaymentOrder();
+      getDebitOrder();
+      gettotalSalesToDayCount();
       number.clear();
       emit(ScanByIdSucsses());
     }).catchError((er) {
@@ -146,31 +267,173 @@ class HomePageCubit extends Cubit<HomeState> {
 
   loadData() async {
     await getUserData();
-
+    await getLatestMessage();
+    await getAllCashCount();
+    await getCachInDayCount();
+    await getAllSalesCount();
+    await getStillDebitCount();
+    await getAllDebitInDayCount();
+    await getAllPaymentInDayCount();
+    await getAllPaymentCount();
+    await getAllDebitCount();
+    await gettotalSalesToDayCount();
+    // await getTopSales();
     emit(GetPartenerSucsses());
   }
 
-  ReturnFund? returnFund;
-  addReturnFund({
-    int? clientId,
-    int? companyId,
-  }) {
-    var formData = FormData.fromMap(
-        {"price": price.text, "shop_id": clientId, "company_id": companyId});
-    emit(ReturnFundLoading());
-    DioHelper.postData(path: ApiUrls.RETURN_FUND_URL, data: formData)
-        .then((value) {
-      returnFund = ReturnFund.fromJson(value.data);
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: defaultText(txt: returnFund?.msg.toString())));
-      getTopSales();
-      emit(ReturnFundSucsses());
+  // ReturnFund? returnFund;
+  // addReturnFund({
+  //   int? clientId,
+  //   int? companyId,
+  // }) {
+  //   var formData = FormData.fromMap(
+  //       {"price": price.text, "shop_id": clientId, "company_id": companyId});
+  //   emit(ReturnFundLoading());
+  //   DioHelper.postData(path: ApiUrls.RETURN_FUND_URL, data: formData)
+  //       .then((value) {
+  //     returnFund = ReturnFund.fromJson(value.data);
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: defaultText(txt: returnFund?.msg.toString())));
+  //     getTopSales();
+  //     emit(ReturnFundSucsses());
+  //   }).catchError((er) {
+  //     print(er.toString());
+  //     ScaffoldMessenger.of(context)
+  //         .showSnackBar(SnackBar(content: defaultText(txt: 'هناك خطآ')));
+  //     emit(ReturnFundError());
+  //   });
+  // }
+
+  Future getAllSalesCount() async {
+    emit(GetOrderCountLoading());
+    var total = await HomeServices.getOrderCountData(ApiUrls.All_SALES_URL);
+    if (total?.status == true) {
+      totalSaless = (total?.data ?? 0.0).toDouble();
+      emit(GetOrderCountSucsess());
+    } else if (total?.status == false) {
+      emit(GetOrderCountError());
+    } else {
+      emit(GetOrderCountfailed());
+    }
+  }
+
+  Future gettotalSalesToDayCount() async {
+    emit(GetOrderCountLoading());
+    var total =
+        await HomeServices.getOrderCountData(ApiUrls.All_SALES_TO_DAY_URL);
+    if (total?.status == true) {
+      totalSalesInDay = (total?.data ?? 0.0).toDouble();
+      emit(GetOrderCountSucsess());
+    } else if (total?.status == false) {
+      emit(GetOrderCountError());
+    } else {
+      emit(GetOrderCountfailed());
+    }
+  }
+
+  Future getStillDebitCount() async {
+    emit(GetOrderCountLoading());
+    var total = await HomeServices.getOrderCountData(ApiUrls.STILL_DEBIT_URL);
+    if (total?.status == true) {
+      stillDebit = (total?.data ?? 0.0).toDouble();
+      emit(GetOrderCountSucsess());
+    } else if (total?.status == false) {
+      emit(GetOrderCountError());
+    } else {
+      emit(GetOrderCountfailed());
+    }
+  }
+
+  Future getAllCashCount() async {
+    emit(GetOrderCountLoading());
+    var total =
+        await HomeServices.getOrderCountData(ApiUrls.ALL_CASH_SALES_URL);
+    if (total?.status == true) {
+      allCashSales = (total?.data ?? 0.0).toDouble();
+      emit(GetOrderCountSucsess());
+    } else if (total?.status == false) {
+      emit(GetOrderCountError());
+    } else {
+      emit(GetOrderCountfailed());
+    }
+  }
+
+  Future getCachInDayCount() async {
+    emit(GetOrderCountLoading());
+
+    DioHelper.getData(path: ApiUrls.ALL_CASH_SALES_TO_DAY_URL).then((value) {
+      if (value.statusCode == 200) {
+        allCashSalesToDay = (value.data['data'] ?? 0.0).toDouble();
+        emit(GetOrderCountSucsess());
+      }
     }).catchError((er) {
       print(er.toString());
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: defaultText(txt: 'هناك خطآ')));
-      emit(ReturnFundError());
+      emit(GetOrderCountError());
+    });
+    // var total =
+    //     await HomeServices.getOrderCountData(ApiUrls.ALL_CASH_SALES_TO_DAY_URL);
+    // if (total?.status == true) {
+    //   allCashSalesToDay = (total?.data ?? 0).toDouble();
+    //   emit(GetOrderCountSucsess());
+    // } else if (total?.status == false) {
+    //   emit(GetOrderCountError());
+    // } else {
+    //   emit(GetOrderCountfailed());
+    // }
+  }
+
+  Future getAllDebitCount() async {
+    emit(GetOrderCountLoading());
+
+    DioHelper.getData(path: ApiUrls.ALL_DEBIT_SALES_URL).then((value) {
+      if (value.statusCode == 200) {
+        allDebitSales = (value.data['data'] ?? 0.0).toDouble();
+        emit(GetOrderCountSucsess());
+      }
+    }).catchError((er) {
+      print(er.toString());
+      emit(GetOrderCountError());
     });
   }
 
+  Future getAllDebitInDayCount() async {
+    emit(GetOrderCountLoading());
+
+    DioHelper.getData(path: ApiUrls.ALL_DEBIT_SALES_TO_DAY_URL).then((value) {
+      if (value.statusCode == 200) {
+        allDebitSalesToDay = (value.data['data'] ?? 0.0).toDouble();
+        emit(GetOrderCountSucsess());
+      }
+    }).catchError((er) {
+      print(er.toString());
+      emit(GetOrderCountfailed());
+    });
+  }
+
+  Future getAllPaymentCount() async {
+    emit(GetOrderCountLoading());
+    var total = await HomeServices.getOrderCountData(ApiUrls.ALL_PAYMENTS_URL);
+    if (total?.status == true) {
+      allPayments = (total?.data ?? 0.0).toDouble();
+      emit(GetOrderCountSucsess());
+    } else if (total?.status == false) {
+      emit(GetOrderCountError());
+    } else {
+      emit(GetOrderCountfailed());
+    }
+  }
+
+  Future getAllPaymentInDayCount() async {
+    emit(GetOrderCountLoading());
+    var total =
+        await HomeServices.getOrderCountData(ApiUrls.ALL_PAYMENTS_TO_DAY_URL);
+    if (total?.status == true) {
+      allPaymentsToDay = (total?.data ?? 0.0).toDouble();
+      emit(GetOrderCountSucsess());
+    } else if (total?.status == false) {
+      emit(GetOrderCountError());
+    } else {
+      emit(GetOrderCountfailed());
+    }
+  }
 }

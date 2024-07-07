@@ -13,12 +13,25 @@ import 'package:svg_flutter/svg_flutter.dart';
 import 'package:system_shop/core/colors/colors.dart';
 import 'package:system_shop/core/componant/componant.dart';
 import 'package:system_shop/core/componant/defult_button.dart';
+import 'package:system_shop/core/const/const.dart';
+import 'package:system_shop/core/database/cache/cache_helper.dart';
 import 'package:system_shop/core/shimmer/shimmer_container.dart';
 import 'package:system_shop/core/shimmer/shimmer_list_view.dart';
+import 'package:system_shop/features/home/data/componant/controller_container.dart';
+import 'package:system_shop/features/home/data/componant/get_car.dart';
 import 'package:system_shop/features/home/presentaion/home_cubit/home_cubit.dart';
 import 'package:system_shop/features/home/presentaion/home_cubit/home_state.dart';
+import 'package:system_shop/features/home/presentaion/screens/all_cars.dart';
+import 'package:system_shop/features/home/presentaion/screens/all_messages.dart';
+import 'package:system_shop/features/home/presentaion/screens/cash_order.dart';
+import 'package:system_shop/features/home/presentaion/screens/dashboard_screen.dart';
+import 'package:system_shop/features/home/presentaion/screens/debit_order.dart';
+import 'package:system_shop/features/home/presentaion/screens/messages_details.dart';
+import 'package:system_shop/features/home/presentaion/screens/payments_order.dart';
+import 'package:system_shop/features/home/presentaion/screens/profile_page.dart';
 import 'package:system_shop/features/home/presentaion/screens/user_data.dart';
 import 'package:system_shop/features/home/presentaion/screens/write_user_number.dart';
+import 'package:system_shop/features/login/presentaion/screens/login_screen/login_screen.dart';
 import 'package:system_shop/main.dart';
 
 BuildContext context = MyApp.navKey.currentState!.context;
@@ -36,6 +49,10 @@ class _HomeState extends State<Home> {
   Barcode? result;
   bool isScan = false;
   String scanResult = "";
+  bool isNoty = false;
+  bool isSales = false;
+  bool isCar = false;
+  var carIndex;
   QRViewController? controller;
   Future scanBarcode() async {
     String scanResult;
@@ -61,6 +78,7 @@ class _HomeState extends State<Home> {
     });
   }
 
+  var scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     List<String> items = [
@@ -70,9 +88,24 @@ class _HomeState extends State<Home> {
     return BlocProvider<HomePageCubit>(
         create: (context) => HomePageCubit()
           ..getUserData()
-          ..getTotalShopSales()
-          ..getCompanyList()
-          ..getTopSales(),
+          ..getAllCashCount()
+          ..getLatestMessage()
+          ..getSettingsData()
+          ..getCachInDayCount()
+          ..getAllSalesCount()
+          ..getStillDebitCount()
+          ..getAllDebitInDayCount()
+          ..getAllPaymentInDayCount()
+          ..getAllPaymentCount()
+          ..getClientCar()
+          ..getAllDebitCount()
+          ..getAllMessage()
+          ..getCashOrder()
+          ..getPaymentOrder()
+          ..getDebitOrder()
+          ..gettotalSalesToDayCount()
+        // ..getTopSales()
+        ,
         child:
             BlocConsumer<HomePageCubit, HomeState>(listener: (context, state) {
           if (state is ScanByIdSucsses) {
@@ -85,547 +118,961 @@ class _HomeState extends State<Home> {
           }
         }, builder: (context, state) {
           HomePageCubit cubit = HomePageCubit.get(context);
-          return Directionality(
-            textDirection: TextDirection.rtl,
-            child: RefreshIndicator(
-                backgroundColor: AppColors.mainColor,
-                onRefresh: () => cubit.loadData(),
-                child: Scaffold(
-                  body: cubit.userData == null
-                      ? Center(
-                          child: CircularProgressIndicator(
-                          color: AppColors.buttonRedColor,
-                        ))
-                      : Stack(
-                          alignment: Alignment.topLeft,
+          return RefreshIndicator(
+              backgroundColor: AppColors.mainColor,
+              onRefresh: () => cubit.loadData(),
+              child: Scaffold(
+                key: scaffoldKey,
+                drawer: Drawer(
+                  width: 260.w,
+                  child: ListView(
+                    padding:
+                        EdgeInsets.only(top: 100.h, left: 15.w, right: 15.w),
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          defaultText(
+                              txt: cubit.appSettings != null
+                                  ? cubit.appSettings!.data!.name
+                                  : '',
+                              fontSize: 20.sp),
+                          SizedBox(
+                            width: 5.w,
+                          ),
+                          defaultText(txt: 'مرحبا بك', fontSize: 20.sp),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 50.h,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          scaffoldKey.currentState!.closeDrawer();
+                          nextPage(context, Home());
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Stack(
-                              alignment: Alignment.centerRight,
-                              children: [
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Stack(
-                                      alignment: Alignment.bottomRight,
-                                      children: [
-                                        Container(
-                                          height: MediaQuery.of(context)
-                                              .size
-                                              .height,
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  fit: BoxFit.fill,
-                                                  image: AssetImage(
-                                                      'assets/images/Rectangle 225@2x.png'))),
-                                        ),
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                top: 50.h, left: 15, right: 15),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Container(
-                                                      height: 35.h,
-                                                      width: 35.w,
-                                                      decoration: BoxDecoration(
-                                                          shape:
-                                                              BoxShape.circle,
-                                                          border: Border.all(
-                                                              width: .2),
-                                                          image: cubit.userData!
-                                                                      .image !=
-                                                                  ""
-                                                              ? DecorationImage(
-                                                                  fit: BoxFit
-                                                                      .cover,
-                                                                  image: NetworkImage(cubit
-                                                                      .userData!
-                                                                      .image
-                                                                      .toString()))
-                                                              : DecorationImage(
-                                                                  image: AssetImage(
-                                                                      'assets/images/man.png'))),
-                                                    ),
-                                                    // SizedBox(
-                                                    //   width: 100.w,
-                                                    // ),
-                                                    Column(
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            defaultText(
-                                                                txt:
-                                                                    ' اهلا بك ',
-                                                                fontSize: 13,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                            defaultText(
-                                                                txt: ' (عميل)',
-                                                                fontSize: 13,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                          ],
-                                                        ),
-                                                        defaultText(
-                                                            txt: cubit.userData
-                                                                    ?.name ??
-                                                                '',
-                                                            fontSize: 11,
-                                                            fontWeight:
-                                                                FontWeight.bold)
-                                                      ],
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        scanBarcode();
-                                                      },
-                                                      child: Container(
-                                                        height: 30.h,
-                                                        width: 30.w,
-                                                        decoration: BoxDecoration(
-                                                            // borderRadius: BorderRadius.circular(12),
-                                                            // border: Border.all(width: .2),
-                                                            image: DecorationImage(
-                                                                image: AssetImage(
-                                                          'assets/images/qr-code.png',
-                                                        ))),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: 40.h,
-                                                ),
-
-                                                Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Container(
-                                                        width: 170.w,
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                top: 12),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        13),
-                                                            color: AppColors
-                                                                .buttonGreenColor),
-                                                        child: Center(
-                                                          child: Column(
-                                                            children: [
-                                                              defaultText(
-                                                                txt:
-                                                                    'اجمالي المعاملات',
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 13.sp,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                              defaultText(
-                                                                txt: cubit.userData ==
-                                                                        null
-                                                                    ? ""
-                                                                    : cubit
-                                                                        .userData!
-                                                                        .totalBuy!
-                                                                        .toStringAsFixed(
-                                                                            2),
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 30.sp,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 15.w,
-                                                    ),
-                                                    Expanded(
-                                                      child: Container(
-                                                        width: 170.w,
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                top: 12),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        13),
-                                                            color: AppColors
-                                                                .buttonRedColor),
-                                                        child: Center(
-                                                          child: Column(
-                                                            children: [
-                                                              defaultText(
-                                                                txt:
-                                                                    ' المعاملات المستحقة',
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 13.sp,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                              defaultText(
-                                                                txt: cubit.userData ==
-                                                                        null
-                                                                    ? ""
-                                                                    : cubit
-                                                                        .userData!
-                                                                        .totalDue!
-                                                                        .toStringAsFixed(
-                                                                            2),
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 30.sp,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-
-                                                // Row(
-                                                //   children: [
-                                                //     DefultButton(
-                                                //       color:
-                                                //           AppColors.buttonGreenColor,
-                                                //       title: '3000',
-                                                //       txt: 'عدد المبيعات',
-                                                //       width: 150.w,
-                                                //       hieght: 60.h,
-                                                //       ontap: () {},
-                                                //     ),
-                                                //     // SizedBox(
-                                                //     //   width: 15.w,
-                                                //     // ),
-                                                //     // DefultButton(
-                                                //     //   color: AppColors.buttonRedColor,
-                                                //     //   title: '3000',
-                                                //     //   width: 150.w,
-                                                //     //   hieght: 60.h,
-                                                //     //   ontap: () {},
-                                                //     // ),
-                                                //   ],
-                                                // ),
-
-                                                SizedBox(
-                                                  height: 20.h,
-                                                ),
-                                                Center(
-                                                  child: Container(
-                                                    height: 80.h,
-                                                    width: 80.w,
-                                                    decoration: BoxDecoration(
-                                                        // shape: BoxShape.circle,
-                                                        // border: Border.all(width: .2),
-                                                        //     image: DecorationImage(
-                                                        //         image: NetworkImage(
-                                                        //   cubit.userData!.qr
-                                                        //       .toString(),
-                                                        // ))
-                                                        ),
-                                                    child: SvgPicture.network(
-                                                        cubit.userData!.qr
-                                                            .toString()),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 10.h,
-                                                ),
-                                                Center(
-                                                  child: defaultText(
-                                                      txt:
-                                                          cubit.userData == null
-                                                              ? ""
-                                                              : cubit.userData!
-                                                                  .number
-                                                                  .toString(),
-                                                      fontSize: 12.sp,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            )),
-                                      ],
-                                    ),
-                                    Stack(
-                                      alignment: Alignment.centerRight,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(top: 30.h),
-                                          child: Container(
-                                            height: 200,
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                    fit: BoxFit.fill,
-                                                    image: AssetImage(
-                                                        'assets/images/Graph@2x.png'))),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                    padding: EdgeInsets.only(
-                                        top: 400.h, left: 10, right: 10),
-                                    child: cubit.salesData.isEmpty
-                                        ? Container(
-                                            height: 150.h,
-                                            child: Center(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(Icons
-                                                      .share_location_sharp),
-                                                  SizedBox(
-                                                    height: 10.h,
-                                                  ),
-                                                  defaultText(
-                                                      txt:
-                                                          'لا توجد مبيعات جديدة',
-                                                      fontSize: 14.sp,
-                                                      fontWeight:
-                                                          FontWeight.bold)
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                        : Container(
-                                            height: 1000,
-                                            child: ListView.separated(
-                                                padding: EdgeInsets.zero,
-                                                itemBuilder:
-                                                    (context, index) => Stack(
-                                                          alignment:
-                                                              Alignment.center,
-                                                          children: [
-                                                            Container(
-                                                              height: 80,
-                                                              width: double
-                                                                  .infinity,
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(12),
-                                                              decoration: BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              16),
-                                                                  color: AppColors
-                                                                      .containerColor),
-                                                            ),
-                                                            Stack(
-                                                              alignment: Alignment
-                                                                  .bottomRight,
-                                                              children: [
-                                                                Container(
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              10),
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .end,
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: EdgeInsets.only(
-                                                                            top:
-                                                                                0.h,
-                                                                            left: 15.w),
-                                                                        child:
-                                                                            Row(
-                                                                          children: [
-                                                                            Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                defaultText(txt: cubit.salesData[index].price.toString(), color: Colors.red, fontSize: 14.sp, fontWeight: FontWeight.bold),
-                                                                                defaultText(txt: cubit.salesData[index].date.toString(), fontSize: 12.sp, fontWeight: FontWeight.bold)
-                                                                              ],
-                                                                            ),
-                                                                            SizedBox(
-                                                                              width: 50.w,
-                                                                            ),
-                                                                            Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.end,
-                                                                              children: [
-                                                                                defaultText(txt: cubit.salesData[index].clientName.toString(), fontSize: 16.sp, fontWeight: FontWeight.bold),
-                                                                                defaultText(txt: cubit.salesData[index].companyName.toString(), fontSize: 12.sp, fontWeight: FontWeight.bold)
-                                                                              ],
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      Stack(
-                                                                        alignment:
-                                                                            Alignment.center,
-                                                                        children: [
-                                                                          Container(
-                                                                            height:
-                                                                                50.h,
-                                                                            width:
-                                                                                50.w,
-                                                                            decoration:
-                                                                                BoxDecoration(borderRadius: BorderRadius.circular(13), color: AppColors.secandColor),
-                                                                          ),
-                                                                          Image.asset(
-                                                                              'assets/images/shopping bag.png')
-                                                                        ],
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                // Padding(
-                                                                //   padding: EdgeInsets.only(
-                                                                //       left:
-                                                                //           30.w,
-                                                                //       right:
-                                                                //           30.w),
-                                                                //   child:
-                                                                //       InkWell(
-                                                                //     onTap: () {
-                                                                //       cubit.addReturnFund(
-                                                                //           cubit.salesData[index].id);
-                                                                //     },
-                                                                //     child: defaultText(
-                                                                //         txt:
-                                                                //             'استرجاع',
-                                                                //         fontSize: 12
-                                                                //             .sp,
-                                                                //         color: AppColors
-                                                                //             .buttonRedColor,
-                                                                //         fontWeight:
-                                                                //             FontWeight.bold),
-                                                                //   ),
-                                                                // )
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                separatorBuilder:
-                                                    (context, index) =>
-                                                        SizedBox(
-                                                          height: 12,
-                                                        ),
-                                                itemCount:
-                                                    cubit.salesData.length),
-                                          ))
-                              ],
-                            ),
-                            if (isScan == true)
-                              Padding(
-                                padding: EdgeInsets.only(top: 90.h, left: 12.w),
-                                child: Container(
-                                  height: 160.h,
-                                  width: 260.w,
-                                  decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                            offset: Offset(0, 3),
-                                            color: Colors.grey.shade400,
-                                            blurRadius: 3,
-                                            spreadRadius: 3)
-                                      ],
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: Colors.white),
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        top: 20, left: 12, right: 12),
-                                    child: Column(
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            scanBarcode();
-                                            setState(() {
-                                              isScan = false;
-                                            });
-                                          },
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Image.asset(
-                                                'assets/images/scan.png',
-                                                height: 20.h,
-                                                width: 20.w,
-                                              ),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              defaultText(
-                                                  txt: 'Scan Qr Code',
-                                                  fontSize: 17,
-                                                  color: Colors.red,
-                                                  fontWeight: FontWeight.bold),
-                                            ],
-                                          ),
-                                        ),
-                                        Divider(
-                                          color: Colors.grey,
-                                        ),
-                                        defaultText(
-                                            txt: 'ــــ او ــــ',
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold),
-                                        defaultText(
-                                            txt: 'من الممكن ادخال الرقم ',
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold),
-                                        InkWell(
-                                          onTap: () {
-                                            nextPage(
-                                                context,
-                                                BlocProvider.value(
-                                                    value: cubit,
-                                                    child: WriteUserNumber()));
-                                            setState(() {
-                                              isScan = false;
-                                            });
-                                          },
-                                          child: defaultText(
-                                              txt: 'اضغط هنا',
-                                              fontSize: 17,
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              )
+                            defaultText(
+                                txt: 'الصفحة الرئيسية', fontSize: 20.sp),
+                            Icon(
+                              Icons.arrow_forward_ios_sharp,
+                              color: Colors.grey,
+                              size: 20,
+                            )
                           ],
                         ),
-                )),
-          );
+                      ),
+                      Divider(
+                        height: 30.h,
+                        color: Colors.grey,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          scaffoldKey.currentState!.closeDrawer();
+                          setState(() {
+                            isSales = false;
+                          });
+                          nextPage(
+                              context,
+                              BlocProvider.value(
+                                  value: cubit, child: DashBoardScreen()));
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            defaultText(txt: 'لوحه التحكم', fontSize: 20.sp),
+                            Icon(
+                              Icons.arrow_forward_ios_sharp,
+                              color: Colors.grey,
+                              size: 20,
+                            )
+                          ],
+                        ),
+                      ),
+                      Divider(
+                        height: 30.h,
+                        color: Colors.grey,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          scaffoldKey.currentState!.closeDrawer();
+                          setState(() {
+                            isSales = false;
+                          });
+                          nextPage(
+                              context,
+                              BlocProvider.value(
+                                  value: cubit, child: AllMessages()));
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            defaultText(txt: 'الاشعارات', fontSize: 20.sp),
+                            Icon(
+                              Icons.arrow_forward_ios_sharp,
+                              color: Colors.grey,
+                              size: 20,
+                            )
+                          ],
+                        ),
+                      ),
+                      Divider(
+                        height: 30.h,
+                        color: Colors.grey,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          scaffoldKey.currentState!.closeDrawer();
+                          setState(() {
+                            isSales = false;
+                          });
+                          nextPage(
+                              context,
+                              BlocProvider.value(
+                                  value: cubit, child: PaymentsOrder()));
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            defaultText(txt: 'سداد الديون', fontSize: 20.sp),
+                            Icon(
+                              Icons.arrow_forward_ios_sharp,
+                              color: Colors.grey,
+                              size: 20,
+                            )
+                          ],
+                        ),
+                      ),
+                      Divider(
+                        height: 30.h,
+                        color: Colors.grey,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            isSales = !isSales;
+                          });
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            defaultText(txt: 'المبيعات', fontSize: 20.sp),
+                            Icon(
+                              Icons.arrow_forward_ios_sharp,
+                              color: Colors.grey,
+                              size: 20,
+                            )
+                          ],
+                        ),
+                      ),
+                      if (isSales == true)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 15.h,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                scaffoldKey.currentState!.closeDrawer();
+                                setState(() {
+                                  isSales = false;
+                                });
+                                nextPage(
+                                    context,
+                                    BlocProvider.value(
+                                        value: cubit, child: CashOrder()));
+                              },
+                              child: defaultText(
+                                  txt: 'الطلبات النقدي ', fontSize: 13.sp),
+                            ),
+                            SizedBox(
+                              height: 15.h,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                scaffoldKey.currentState!.closeDrawer();
+                                setState(() {
+                                  isSales = false;
+                                });
+                                nextPage(
+                                    context,
+                                    BlocProvider.value(
+                                        value: cubit, child: debitOrder()));
+                              },
+                              child: defaultText(
+                                  txt: 'الطلبات بالدين ', fontSize: 13.sp),
+                            ),
+                          ],
+                        ),
+                      Divider(
+                        height: 30.h,
+                        color: Colors.grey,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          scaffoldKey.currentState!.closeDrawer();
+                          nextPage(context, AllCars());
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            defaultText(txt: ' السيارات', fontSize: 20.sp),
+                            Icon(
+                              Icons.arrow_forward_ios_sharp,
+                              color: Colors.grey,
+                              size: 20,
+                            )
+                          ],
+                        ),
+                      ),
+                      Divider(
+                        height: 30.h,
+                        color: Colors.grey,
+                      ),
+                      // InkWell(
+                      //   onTap: () {
+                      //     scaffoldKey.currentState!.closeDrawer();
+                      //     nextPage(
+                      //         context,
+                      //         BlocProvider.value(
+                      //             value: cubit, child: ProfilePage()));
+                      //   },
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //     children: [
+                      //       defaultText(
+                      //           txt: 'تعديل الملف الشخصي ', fontSize: 20.sp),
+                      //       Icon(
+                      //         Icons.arrow_forward_ios_sharp,
+                      //         color: Colors.grey,
+                      //         size: 20,
+                      //       )
+                      //     ],
+                      //   ),
+                      // ),
+                      // Divider(
+                      //   height: 30.h,
+                      //   color: Colors.grey,
+                      // ),
+                      InkWell(
+                        onTap: () {
+                          scaffoldKey.currentState!.closeDrawer();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: defaultText(
+                                  txt: 'تم تسجيل الخروج بنجاح',
+                                  fontSize: 20.sp),
+                            ),
+                          );
+                          CacheHelper.removeShared(key: AppConst.kLogin).then(
+                              (value) => nextPageUntil(context, LoginScreen()));
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            defaultText(txt: 'تسجيل الخروج', fontSize: 20.sp),
+                            Icon(
+                              Icons.arrow_forward_ios_sharp,
+                              color: Colors.grey,
+                              size: 20,
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                body:
+                    // cubit.userData == null
+                    //     ? Center(
+                    //         child: CircularProgressIndicator(
+                    //         color: AppColors.buttonRedColor,
+                    //       ))
+                    //     :
+                    Stack(
+                  alignment: Alignment.topLeft,
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.only(
+                          top: 50.h,
+                          left: 15,
+                          right: 15,
+                        ),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      InkWell(
+                                          onTap: () {
+                                            scaffoldKey.currentState!
+                                                .openDrawer();
+                                          },
+                                          child: CircleAvatar(
+                                            backgroundColor:
+                                                Colors.grey.shade200,
+                                            maxRadius: 17,
+                                            child: Icon(
+                                              CupertinoIcons.text_justifyleft,
+                                              color: Colors.black,
+                                              size: 17,
+                                            ),
+                                          )),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              isNoty = true;
+                                            });
+                                            // scanBarcode();
+                                          },
+                                          child: Image.asset(
+                                            'assets/images/notification-bell.png',
+                                            height: 30.h,
+                                            width: 30.w,
+                                          )),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          defaultText(
+                                              txt: ' اهلا بك ',
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold),
+                                          defaultText(
+                                              txt: ' (عميل)',
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold),
+                                        ],
+                                      ),
+                                      defaultText(
+                                          txt: cubit.userData?.name ?? ' ',
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.bold)
+                                    ],
+                                  ),
+
+                                  Container(
+                                    height: 35.h,
+                                    width: 35.w,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(width: .2),
+                                        image:
+                                            // cubit.userData!
+                                            //             .image !=
+                                            //         ""
+                                            //     ? DecorationImage(
+                                            //         fit: BoxFit
+                                            //             .cover,
+                                            //         image: NetworkImage(cubit
+                                            //             .userData!
+                                            //             .image
+                                            //             .toString()))
+                                            //     :
+                                            DecorationImage(
+                                                image: AssetImage(
+                                                    'assets/images/man.png'))),
+                                  ),
+                                  // SizedBox(
+                                  //   width: 100.w,
+                                  // ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 40.h,
+                              ),
+                              Column(
+                                children: [
+                                  // Row(
+                                  //   mainAxisAlignment:
+                                  //       MainAxisAlignment.spaceBetween,
+                                  //   children: [
+                                  //     Row(
+                                  //       children: [
+                                  //         Icon(Icons.construction_outlined),
+                                  //         SizedBox(
+                                  //           width: 10.w,
+                                  //         ),
+                                  //         defaultText(
+                                  //             txt: 'لوحة التحكم',
+                                  //             fontSize: 17.sp,
+                                  //             fontWeight: FontWeight.bold),
+                                  //       ],
+                                  //     ),
+                                  //     InkWell(
+                                  //         onTap: () {
+                                  //           pop(context);
+                                  //         },
+                                  //         child: Icon(Icons.arrow_forward))
+                                  //   ],
+                                  // ),
+                                  // SizedBox(
+                                  //   height: 60.h,
+                                  // ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          width: 170.w,
+                                          padding: EdgeInsets.only(top: 12),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(13),
+                                              color:
+                                                  AppColors.buttonGreenColor),
+                                          child: Center(
+                                            child: Column(
+                                              children: [
+                                                defaultText(
+                                                  txt: 'اجمالي المعاملات اليوم',
+                                                  color: Colors.white,
+                                                  fontSize: 13.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                defaultText(
+                                                  txt: cubit.totalSalesInDay
+                                                      .toString(),
+                                                  color: Colors.white,
+                                                  fontSize: 30.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 15.w,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          width: 170.w,
+                                          padding: EdgeInsets.only(top: 12),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(13),
+                                              color: Colors.orangeAccent),
+                                          child: Center(
+                                            child: Column(
+                                              children: [
+                                                defaultText(
+                                                  txt:
+                                                      'اجمالي مبيعات اليوم نقدي',
+                                                  color: Colors.white,
+                                                  fontSize: 13.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                defaultText(
+                                                  txt: cubit.allCashSalesToDay
+                                                      .toString(),
+                                                  color: Colors.white,
+                                                  fontSize: 30.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 20.h,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: ControllerContainer(
+                                          title: cubit.totalSaless.toString(),
+                                          txt: 'اجمالي المعاملات ',
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 15.w,
+                                      ),
+                                      Expanded(
+                                        child: ControllerContainer(
+                                          title: cubit.allCashSales.toString(),
+                                          txt: 'اجمالي المبيعات نقدي',
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 15.w,
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 20.h,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: ControllerContainer(
+                                          title: cubit.allDebitSales.toString(),
+                                          txt: 'اجمالي المبيعات بالدين',
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 15.w,
+                                      ),
+                                      Expanded(
+                                        child: ControllerContainer(
+                                          title: cubit.allPayments.toString(),
+                                          txt: 'اجمالي تسديد الدين',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 20.w,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: ControllerContainer(
+                                          color: AppColors.buttonRedColor,
+                                          title: cubit.stillDebit.toString(),
+                                          txt: 'اجمالي المديونيه المتبقيه ',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 20.h,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          width: 170.w,
+                                          padding: EdgeInsets.only(top: 12),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(13),
+                                              color:
+                                                  AppColors.buttonGreenColor),
+                                          child: Center(
+                                            child: Column(
+                                              children: [
+                                                defaultText(
+                                                  txt:
+                                                      'اجمالي مبيعات اليوم بالدين',
+                                                  color: Colors.white,
+                                                  fontSize: 13.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                defaultText(
+                                                  txt: cubit.allDebitSalesToDay
+                                                      .toString(),
+                                                  color: Colors.white,
+                                                  fontSize: 30.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 15.w,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          width: 170.w,
+                                          padding: EdgeInsets.only(top: 12),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(13),
+                                              color: Colors.orangeAccent),
+                                          child: Center(
+                                            child: Column(
+                                              children: [
+                                                defaultText(
+                                                  txt:
+                                                      'اجمالي تسديد الدين اليوم ',
+                                                  color: Colors.white,
+                                                  fontSize: 13.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                defaultText(
+                                                  txt: cubit.allPaymentsToDay
+                                                      .toString(),
+                                                  color: Colors.white,
+                                                  fontSize: 30.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 15.h,
+                                  ),
+                                  cubit.carData.isEmpty
+                                      ? Center(
+                                          child: CircularProgressIndicator())
+                                      : Container(
+                                          padding: EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            border: Border.all(
+                                                color: Colors.white, width: .4),
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              defaultText(txt: 'عرض السيارات'),
+                                              ListView.separated(
+                                                  physics:
+                                                      NeverScrollableScrollPhysics(),
+                                                  shrinkWrap: true,
+                                                  itemBuilder: (context,
+                                                          index) =>
+                                                      InkWell(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            isCar = true;
+                                                            carIndex = index;
+                                                          });
+                                                        },
+                                                        child: Container(
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  12),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15),
+                                                            color: Colors.white,
+                                                          ),
+                                                          child: Column(
+                                                            children: [
+                                                              Icon(CupertinoIcons
+                                                                  .car_detailed),
+                                                              SizedBox(
+                                                                width: 20.w,
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceAround,
+                                                                children: [
+                                                                  defaultText(
+                                                                      txt:
+                                                                          'رقم السيارة'),
+                                                                  defaultText(
+                                                                      txt: cubit
+                                                                          .carData[
+                                                                              index]
+                                                                          .number
+                                                                          .toString()),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                  separatorBuilder:
+                                                      (context, index) =>
+                                                          SizedBox(
+                                                            height: 15,
+                                                          ),
+                                                  itemCount:
+                                                      cubit.carData.length),
+                                            ],
+                                          ),
+                                        )
+                                ],
+                              ),
+                              SizedBox(
+                                height: 40.h,
+                              )
+                            ],
+                          ),
+                        )),
+                    if (isNoty == true)
+                      Padding(
+                        padding:
+                            EdgeInsets.only(top: 90.h, left: 12.w, right: 12.w),
+                        child: Container(
+                          height: 360.h,
+                          width: 320.w,
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                    offset: Offset(0, 3),
+                                    color: Colors.grey.shade400,
+                                    blurRadius: 3,
+                                    spreadRadius: 3)
+                              ],
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.white),
+                          child: Padding(
+                            padding:
+                                EdgeInsets.only(top: 20, left: 12, right: 12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        isNoty = false;
+                                      });
+                                    },
+                                    child: defaultText(
+                                      txt: 'الغاء',
+                                    )),
+                                SizedBox(
+                                  height: 15.h,
+                                ),
+                                cubit.message.isEmpty
+                                    ? Center(
+                                        child: defaultText(
+                                        txt: 'لا توجد رسائل',
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold,
+                                      ))
+                                    : ListView.separated(
+                                        padding: EdgeInsets.zero,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) =>
+                                            ListTile(
+                                              onTap: () {
+                                                nextPage(
+                                                    context,
+                                                    MessageDetails(
+                                                        data: cubit
+                                                            .message[index]));
+                                              },
+                                              trailing: Container(
+                                                height: 40.h,
+                                                width: 40.w,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Colors.grey.shade200,
+                                                  image: DecorationImage(
+                                                      image: AssetImage(
+                                                          'assets/images/image-.png')),
+                                                ),
+                                              ),
+                                              title: defaultText(
+                                                  txt: cubit.message[index]
+                                                      .employeeName
+                                                      .toString(),
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.bold),
+                                              subtitle: defaultText(
+                                                  txt: cubit
+                                                      .message[index].message
+                                                      .toString(),
+                                                  fontSize: 12.sp,
+                                                  color: AppColors.textColor,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                        separatorBuilder: (context, index) =>
+                                            Divider(
+                                              height: 30,
+                                              color: Colors.grey.shade300,
+                                            ),
+                                        itemCount: cubit.message.length),
+                                Divider(
+                                  height: 30.h,
+                                  color: Colors.grey,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      isNoty = false;
+                                    });
+                                    nextPage(
+                                        context,
+                                        BlocProvider.value(
+                                            value: cubit,
+                                            child: AllMessages()));
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Icon(
+                                        Icons.arrow_back_ios,
+                                        color: Colors.grey,
+                                        size: 20,
+                                      ),
+                                      defaultText(
+                                          txt: 'عرض جميع الرسائل',
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (isCar == true)
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: 160.h, left: 12.w, right: 12.w),
+                        child: Container(
+                          height: 260.h,
+                          width: 320.w,
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                    offset: Offset(0, 3),
+                                    color: Colors.grey.shade400,
+                                    blurRadius: 3,
+                                    spreadRadius: 3)
+                              ],
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.white),
+                          child: Padding(
+                            padding:
+                                EdgeInsets.only(top: 20, left: 12, right: 12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        isCar = false;
+                                      });
+                                    },
+                                    child: defaultText(
+                                      txt: 'الغاء',
+                                    )),
+                                SizedBox(
+                                  height: 25.h,
+                                ),
+                                Divider(
+                                  color: Colors.grey,
+                                ),
+                                SizedBox(
+                                  height: 25.h,
+                                ),
+                                GetCar(
+                                  image: cubit.carData[carIndex].qr,
+                                  carNumber: cubit.carData[carIndex].number,
+                                  availabledebit: cubit
+                                      .carData[carIndex].maxDebit
+                                      .toString(),
+                                  debit: cubit.carData[carIndex].defaultMaxDebit
+                                      .toString(),
+                                  debits:
+                                      (cubit.carData[carIndex].defaultMaxDebit -
+                                              cubit.carData[carIndex].maxDebit)
+                                          .toString(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (isScan == true)
+                      Padding(
+                        padding: EdgeInsets.only(top: 90.h, left: 12.w),
+                        child: Container(
+                          height: 160.h,
+                          width: 260.w,
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                    offset: Offset(0, 3),
+                                    color: Colors.grey.shade400,
+                                    blurRadius: 3,
+                                    spreadRadius: 3)
+                              ],
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.white),
+                          child: Padding(
+                            padding:
+                                EdgeInsets.only(top: 20, left: 12, right: 12),
+                            child: Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    scanBarcode();
+                                    setState(() {
+                                      isScan = false;
+                                    });
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/scan.png',
+                                        height: 20.h,
+                                        width: 20.w,
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      defaultText(
+                                          txt: 'Scan Qr Code',
+                                          fontSize: 17,
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.bold),
+                                    ],
+                                  ),
+                                ),
+                                Divider(
+                                  color: Colors.grey,
+                                ),
+                                defaultText(
+                                    txt: 'ــــ او ــــ',
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold),
+                                defaultText(
+                                    txt: 'من الممكن ادخال الرقم ',
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold),
+                                InkWell(
+                                  onTap: () {
+                                    nextPage(
+                                        context,
+                                        BlocProvider.value(
+                                            value: cubit,
+                                            child: WriteUserNumber()));
+                                    setState(() {
+                                      isScan = false;
+                                    });
+                                  },
+                                  child: defaultText(
+                                      txt: 'اضغط هنا',
+                                      fontSize: 17,
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                  ],
+                ),
+              ));
         }));
   }
 }

@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:system_shop/features/home_page/presentaion/home_cubit/home_cubit.dart';
 import 'package:system_shop/features/home_page/presentaion/home_cubit/home_state.dart';
+import 'package:system_shop/main.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});

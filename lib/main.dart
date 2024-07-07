@@ -25,7 +25,6 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-
   const MyApp({super.key});
   static GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
@@ -34,7 +33,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create:(context) => HomePageCubit(),)
+        BlocProvider(
+          create: (context) => HomePageCubit(),
+        )
       ],
       child: ScreenUtilInit(
           designSize: const Size(360, 690),
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
             return MaterialApp(
               navigatorKey: navKey,
               debugShowCheckedModeBanner: false,
-              title: 'Kalde client',
+              title: 'الجنوبي',
               home: SplashScreen(),
               theme: ThemeData(
                   // backgroundColor: Color(0xffE2E7ED),

@@ -42,12 +42,14 @@ class _UserDataState extends State<UserData> {
             textDirection: TextDirection.rtl,
             child: Scaffold(
               body: SingleChildScrollView(
-                child: cubit.scanClientById == null
-                    ? Center(
-                        child: CircularProgressIndicator(
-                        color: AppColors.buttonGreenColor,
-                      ))
-                    : Stack(
+                child: 
+                // cubit.scanClientById == null
+                //     ? Center(
+                //         child: CircularProgressIndicator(
+                //         color: AppColors.buttonGreenColor,
+                //       ))
+                //     : 
+                    Stack(
                         // alignment: Alignment.bottomCenter,
                         children: [
                           Container(
@@ -104,11 +106,12 @@ class _UserDataState extends State<UserData> {
                                                   MainAxisAlignment.end,
                                               children: [
                                                 defaultText(
-                                                    txt: cubit.scanClientById!
-                                                            .data!.totalSale!
-                                                            .toStringAsFixed(
-                                                                2) ??
-                                                        '',
+                                                    txt:
+                                                    //  cubit.scanClientById!
+                                                    //         .data!.totalSale!
+                                                    //         .toStringAsFixed(
+                                                    //             2) ??
+                                                        '0000',
                                                     color: Colors.white,
                                                     fontSize: 11,
                                                     fontWeight:
@@ -138,9 +141,10 @@ class _UserDataState extends State<UserData> {
                                                   MainAxisAlignment.end,
                                               children: [
                                                 defaultText(
-                                                    txt: cubit.scanClientById!
-                                                            .data!.name ??
-                                                        '',
+                                                    txt: 
+                                                    // cubit.scanClientById!
+                                                    //         .data!.name ??
+                                                        '000',
                                                     color: Colors.white,
                                                     fontSize: 13,
                                                     fontWeight:
@@ -148,27 +152,29 @@ class _UserDataState extends State<UserData> {
                                                 SizedBox(
                                                   width: 10.w,
                                                 ),
-                                                cubit.scanClientById!.data!
-                                                            .logo ==
-                                                        ''
-                                                    ? Image.asset(
+                                                // cubit.scanClientById!.data!
+                                                //             .logo ==
+                                                //         ''
+                                                //     ? 
+                                                Image.asset(
                                                         'assets/images/man.png',
                                                         height: 30,
                                                         width: 30,
                                                       )
-                                                    : Container(
-                                                        height: 30.h,
-                                                        width: 30.w,
-                                                        decoration: BoxDecoration(
-                                                            shape:
-                                                                BoxShape.circle,
-                                                            image: DecorationImage(
-                                                                image: NetworkImage(cubit
-                                                                    .scanClientById!
-                                                                    .data!
-                                                                    .logo
-                                                                    .toString()))),
-                                                      ),
+                                                //     : 
+                                                    // Container(
+                                                    //     height: 30.h,
+                                                    //     width: 30.w,
+                                                    //     decoration: BoxDecoration(
+                                                    //         shape:
+                                                    //             BoxShape.circle,
+                                                    //         image: DecorationImage(
+                                                    //             image: NetworkImage(cubit
+                                                    //                 .scanClientById!
+                                                    //                 .data!
+                                                    //                 .logo
+                                                    //                 .toString()))),
+                                                    //   ),
                                               ],
                                             ),
                                             SizedBox(
@@ -179,9 +185,10 @@ class _UserDataState extends State<UserData> {
                                                   MainAxisAlignment.end,
                                               children: [
                                                 defaultText(
-                                                    txt: cubit.scanClientById!
-                                                            .data!.cityName ??
-                                                        '',
+                                                    txt:
+                                                    //  cubit.scanClientById!
+                                                    //         .data!.cityName ??
+                                                        '000',
                                                     color: Colors.white,
                                                     fontSize: 11,
                                                     fontWeight:
@@ -580,13 +587,13 @@ class _UserDataState extends State<UserData> {
                                               ),
                                               InkWell(
                                                 onTap: () {
-                                                  cubit.addReturnFund(
-                                                    clientId: cubit
-                                                        .scanClientById!
-                                                        .data!
-                                                        .id,
-                                                    companyId: companyId,
-                                                  );
+                                                  // cubit.addReturnFund(
+                                                  //   clientId: cubit
+                                                  //       .scanClientById!
+                                                  //       .data!
+                                                  //       .id,
+                                                  //   companyId: companyId,
+                                                  // );
                                                 },
                                                 child: Container(
                                                   height: 45.h,

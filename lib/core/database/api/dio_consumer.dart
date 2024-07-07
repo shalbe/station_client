@@ -99,7 +99,27 @@ class DioHelper {
       //  queryParameters: data
     );
   }
+  static Future<Response> getData({
+    required String path,
+    String? token,
+    dynamic data,
+    Map<String, dynamic>? query,
+  }) async {
+    dio.options.headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer $uid",
+      // "secretKey": "tgCiGblcr1daxYxx3Lw8uw==",
+      'Content-type': 'multipart/form-data'
+    };
+    return await dio.get(
+      path,
+      data: data,
+       queryParameters: query
+    );
+  }
 
+  
+  
   Future<Response?> postFormData(
       {required String endPoint,
       dynamic headers = const {},
@@ -147,17 +167,16 @@ class DioHelper {
     }
   }
 
-  Future<Response?> post(
-      {required String endPoint,
-      dynamic body,
-      dynamic query = const {},
-      Map<String, dynamic> headers = const {}}) async {
+  Future<Response?> post({
+    required String endPoint,
+    dynamic body,
+    dynamic query,
+  }) async {
     // String? accessToken =
     //     MyApp.navKey.currentState!.context.read<AuthCubit>().accessToken;
     // if (kDebugMode) {
     //   print("Access token: $accessToken");
     // }
-    print("headers $headers");
 
     try {
       return await _dio.post(

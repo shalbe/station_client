@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:system_shop/features/profile/presentaion/screens/profile.dart';
+// import 'package:system_shop/features/profile/presentaion/screens/profile.dart';
 import 'package:system_shop/features/transactions/presentaion/screens/transaction_screen.dart';
 import 'package:system_shop/features/home/presentaion/screens/home.dart';
 import 'package:system_shop/features/home_page/presentaion/home_cubit/home_state.dart';
@@ -10,7 +10,7 @@ class HomeCubit extends Cubit<HomeStates> {
   static HomeCubit get(context) => BlocProvider.of(context);
 
   List<Widget> screen = [
-    Profile(),
+    // Profile(),
     Transactions(),
     Home(),
   ];
