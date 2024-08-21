@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -37,17 +39,17 @@ class HomePageCubit extends Cubit<HomeState> {
   List<CompanyData> companyList = [];
   UserProfile? userData;
   double count = 0.0;
-  GetTotalShopSales? totalSales;
+  dynamic totalSales;
 
-  double totalSalesInDay = 0;
-  double totalSaless = 0;
-  double stillDebit = 0;
-  double allCashSales = 0;
-  double allCashSalesToDay = 0.0;
-  double allDebitSales = 0;
-  double allDebitSalesToDay = 0;
-  double allPayments = 0;
-  double allPaymentsToDay = 0;
+  dynamic totalSalesInDay = 0;
+  dynamic totalSaless = 0;
+  dynamic stillDebit = 0;
+  dynamic allCashSales = 0;
+  dynamic allCashSalesToDay = 0.0;
+  dynamic allDebitSales = 0;
+  dynamic allDebitSalesToDay = 0;
+  dynamic allPayments = 0;
+  dynamic allPaymentsToDay = 0;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController name = TextEditingController();
@@ -85,17 +87,17 @@ class HomePageCubit extends Cubit<HomeState> {
 
 // total Shop Sales
   var dioHelper = DioHelper.instance;
-  getTotalShopSales() async {
-    emit(GetTotalShopSalesLoading());
-    dioHelper.get(endpoint: ApiUrls.TOP_SALES_URL).then((value) {
-      totalSales = GetTotalShopSales.fromJson(value!.data);
-      print(totalSales!.data);
-      emit(GetTotalShopSalesSucsses());
-    }).catchError((er) {
-      print(er.toString());
-      emit(GetTotalShopSalesError());
-    });
-  }
+  // getTotalShopSales() async {
+  //   emit(GetTotalShopSalesLoading());
+  //   dioHelper.get(endpoint: ApiUrls.TOP_SALES_URL).then((value) {
+  //     totalSales = GetTotalShopSales.fromJson(value!.data);
+  //     print(totalSales!.data);
+  //     emit(GetTotalShopSalesSucsses());
+  //   }).catchError((er) {
+  //     print(er.toString());
+  //     emit(GetTotalShopSalesError());
+  //   });
+  // }
 
   getLatestMessage() async {
     emit(GetlatestMessageLoading());
@@ -245,26 +247,6 @@ class HomePageCubit extends Cubit<HomeState> {
   AddFund? addFund;
   TextEditingController price = TextEditingController();
 
-  addNewFund({
-    int? clientId,
-    int? companyId,
-  }) {
-    var formData = FormData.fromMap(
-        {"price": price.text, "shop_id": clientId, "company_id": companyId});
-    emit(AddFundLoading());
-    DioHelper.postData(path: ApiUrls.ADD_FUND_URL, data: formData)
-        .then((value) {
-      addFund = AddFund.fromJson(value.data);
-      price.clear();
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(addFund!.msg.toString())));
-      emit(AddFundSucsses());
-    }).catchError((er) {
-      print(er.toString());
-      emit(AddFundError());
-    });
-  }
-
   loadData() async {
     await getUserData();
     await getLatestMessage();
@@ -306,56 +288,48 @@ class HomePageCubit extends Cubit<HomeState> {
 
   Future getAllSalesCount() async {
     emit(GetOrderCountLoading());
-    var total = await HomeServices.getOrderCountData(ApiUrls.All_SALES_URL);
-    if (total?.status == true) {
-      totalSaless = (total?.data ?? 0.0).toDouble();
+    DioHelper.getData(path: ApiUrls.All_SALES_URL).then((value) {
+      totalSaless = value.data['data'] ?? 0.0;
       emit(GetOrderCountSucsess());
-    } else if (total?.status == false) {
+    }).catchError((er) {
+      print(er.toString());
       emit(GetOrderCountError());
-    } else {
-      emit(GetOrderCountfailed());
-    }
+    });
   }
 
   Future gettotalSalesToDayCount() async {
     emit(GetOrderCountLoading());
-    var total =
-        await HomeServices.getOrderCountData(ApiUrls.All_SALES_TO_DAY_URL);
-    if (total?.status == true) {
-      totalSalesInDay = (total?.data ?? 0.0).toDouble();
+    DioHelper.getData(path: ApiUrls.All_SALES_TO_DAY_URL).then((value) {
+      totalSalesInDay = value.data['data'] ?? 0.0;
       emit(GetOrderCountSucsess());
-    } else if (total?.status == false) {
+    }).catchError((er) {
+      print(er.toString());
       emit(GetOrderCountError());
-    } else {
-      emit(GetOrderCountfailed());
-    }
+    });
   }
 
   Future getStillDebitCount() async {
     emit(GetOrderCountLoading());
-    var total = await HomeServices.getOrderCountData(ApiUrls.STILL_DEBIT_URL);
-    if (total?.status == true) {
-      stillDebit = (total?.data ?? 0.0).toDouble();
+    DioHelper.getData(path: ApiUrls.STILL_DEBIT_URL).then((value) {
+      stillDebit = value.data['data'] ?? 0.0;
       emit(GetOrderCountSucsess());
-    } else if (total?.status == false) {
+    }).catchError((er) {
+      print(er.toString());
       emit(GetOrderCountError());
-    } else {
-      emit(GetOrderCountfailed());
-    }
+    });
   }
 
   Future getAllCashCount() async {
     emit(GetOrderCountLoading());
-    var total =
-        await HomeServices.getOrderCountData(ApiUrls.ALL_CASH_SALES_URL);
-    if (total?.status == true) {
-      allCashSales = (total?.data ?? 0.0).toDouble();
-      emit(GetOrderCountSucsess());
-    } else if (total?.status == false) {
+    DioHelper.getData(path: ApiUrls.ALL_CASH_SALES_URL).then((value) {
+      if (value.statusCode == 200) {
+        allCashSales = value.data['data'] ?? 0.0;
+        emit(GetOrderCountSucsess());
+      }
+    }).catchError((er) {
+      print(er.toString());
       emit(GetOrderCountError());
-    } else {
-      emit(GetOrderCountfailed());
-    }
+    });
   }
 
   Future getCachInDayCount() async {
@@ -363,7 +337,8 @@ class HomePageCubit extends Cubit<HomeState> {
 
     DioHelper.getData(path: ApiUrls.ALL_CASH_SALES_TO_DAY_URL).then((value) {
       if (value.statusCode == 200) {
-        allCashSalesToDay = (value.data['data'] ?? 0.0).toDouble();
+        log('=================================${value.data}');
+        allCashSalesToDay = value.data['data'] ?? 0.0;
         emit(GetOrderCountSucsess());
       }
     }).catchError((er) {
@@ -387,7 +362,7 @@ class HomePageCubit extends Cubit<HomeState> {
 
     DioHelper.getData(path: ApiUrls.ALL_DEBIT_SALES_URL).then((value) {
       if (value.statusCode == 200) {
-        allDebitSales = (value.data['data'] ?? 0.0).toDouble();
+        allDebitSales = value.data['data'] ?? 0.0;
         emit(GetOrderCountSucsess());
       }
     }).catchError((er) {
@@ -401,7 +376,7 @@ class HomePageCubit extends Cubit<HomeState> {
 
     DioHelper.getData(path: ApiUrls.ALL_DEBIT_SALES_TO_DAY_URL).then((value) {
       if (value.statusCode == 200) {
-        allDebitSalesToDay = (value.data['data'] ?? 0.0).toDouble();
+        allDebitSalesToDay = value.data['data'] ?? 0.0;
         emit(GetOrderCountSucsess());
       }
     }).catchError((er) {
@@ -412,28 +387,28 @@ class HomePageCubit extends Cubit<HomeState> {
 
   Future getAllPaymentCount() async {
     emit(GetOrderCountLoading());
-    var total = await HomeServices.getOrderCountData(ApiUrls.ALL_PAYMENTS_URL);
-    if (total?.status == true) {
-      allPayments = (total?.data ?? 0.0).toDouble();
-      emit(GetOrderCountSucsess());
-    } else if (total?.status == false) {
+    DioHelper.getData(path: ApiUrls.ALL_PAYMENTS_URL).then((value) {
+      if (value.statusCode == 200) {
+        allPayments = value.data['data'] ?? 0.0;
+        emit(GetOrderCountSucsess());
+      }
+    }).catchError((er) {
+      print(er.toString());
       emit(GetOrderCountError());
-    } else {
-      emit(GetOrderCountfailed());
-    }
+    });
   }
 
   Future getAllPaymentInDayCount() async {
     emit(GetOrderCountLoading());
-    var total =
-        await HomeServices.getOrderCountData(ApiUrls.ALL_PAYMENTS_TO_DAY_URL);
-    if (total?.status == true) {
-      allPaymentsToDay = (total?.data ?? 0.0).toDouble();
-      emit(GetOrderCountSucsess());
-    } else if (total?.status == false) {
-      emit(GetOrderCountError());
-    } else {
+
+    DioHelper.getData(path: ApiUrls.ALL_PAYMENTS_TO_DAY_URL).then((value) {
+      if (value.statusCode == 200) {
+        allPaymentsToDay = value.data['data'] ?? 0.0;
+        emit(GetOrderCountSucsess());
+      }
+    }).catchError((er) {
+      print(er.toString());
       emit(GetOrderCountfailed());
-    }
+    });
   }
 }

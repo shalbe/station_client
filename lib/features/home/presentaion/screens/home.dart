@@ -544,7 +544,7 @@ class _HomeState extends State<Home> {
                                                 ),
                                                 defaultText(
                                                   txt: cubit.totalSalesInDay
-                                                      .toString(),
+                                                      .toStringAsFixed(2),
                                                   color: Colors.white,
                                                   fontSize: 30.sp,
                                                   fontWeight: FontWeight.bold,
@@ -577,7 +577,7 @@ class _HomeState extends State<Home> {
                                                 ),
                                                 defaultText(
                                                   txt: cubit.allCashSalesToDay
-                                                      .toString(),
+                                                      .toStringAsFixed(2),
                                                   color: Colors.white,
                                                   fontSize: 30.sp,
                                                   fontWeight: FontWeight.bold,
@@ -596,7 +596,8 @@ class _HomeState extends State<Home> {
                                     children: [
                                       Expanded(
                                         child: ControllerContainer(
-                                          title: cubit.totalSaless.toString(),
+                                          title: cubit.totalSaless
+                                              .toStringAsFixed(2),
                                           txt: 'اجمالي المعاملات ',
                                         ),
                                       ),
@@ -605,7 +606,8 @@ class _HomeState extends State<Home> {
                                       ),
                                       Expanded(
                                         child: ControllerContainer(
-                                          title: cubit.allCashSales.toString(),
+                                          title: cubit.allCashSales
+                                              .toStringAsFixed(2),
                                           txt: 'اجمالي المبيعات نقدي',
                                         ),
                                       ),
@@ -621,7 +623,8 @@ class _HomeState extends State<Home> {
                                     children: [
                                       Expanded(
                                         child: ControllerContainer(
-                                          title: cubit.allDebitSales.toString(),
+                                          title: cubit.allDebitSales
+                                              .toStringAsFixed(2),
                                           txt: 'اجمالي المبيعات بالدين',
                                         ),
                                       ),
@@ -630,7 +633,8 @@ class _HomeState extends State<Home> {
                                       ),
                                       Expanded(
                                         child: ControllerContainer(
-                                          title: cubit.allPayments.toString(),
+                                          title: cubit.allPayments
+                                              .toStringAsFixed(2),
                                           txt: 'اجمالي تسديد الدين',
                                         ),
                                       ),
@@ -644,7 +648,8 @@ class _HomeState extends State<Home> {
                                       Expanded(
                                         child: ControllerContainer(
                                           color: AppColors.buttonRedColor,
-                                          title: cubit.stillDebit.toString(),
+                                          title: cubit.stillDebit
+                                              .toStringAsFixed(2),
                                           txt: 'اجمالي المديونيه المتبقيه ',
                                         ),
                                       ),
@@ -676,7 +681,7 @@ class _HomeState extends State<Home> {
                                                 ),
                                                 defaultText(
                                                   txt: cubit.allDebitSalesToDay
-                                                      .toString(),
+                                                      .toStringAsFixed(2),
                                                   color: Colors.white,
                                                   fontSize: 30.sp,
                                                   fontWeight: FontWeight.bold,
@@ -709,7 +714,7 @@ class _HomeState extends State<Home> {
                                                 ),
                                                 defaultText(
                                                   txt: cubit.allPaymentsToDay
-                                                      .toString(),
+                                                      .toStringAsFixed(2),
                                                   color: Colors.white,
                                                   fontSize: 30.sp,
                                                   fontWeight: FontWeight.bold,
@@ -721,6 +726,8 @@ class _HomeState extends State<Home> {
                                       ),
                                     ],
                                   ),
+                               
+                               
                                   SizedBox(
                                     height: 15.h,
                                   ),

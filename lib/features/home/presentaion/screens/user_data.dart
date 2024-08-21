@@ -390,13 +390,13 @@ class _UserDataState extends State<UserData> {
                                               ),
                                               InkWell(
                                                 onTap: () {
-                                                  cubit.addNewFund(
-                                                    clientId: cubit
-                                                        .scanClientById!
-                                                        .data!
-                                                        .id,
-                                                    companyId: companyId,
-                                                  );
+                                                  // cubit.addNewFund(
+                                                  //   clientId: cubit
+                                                  //       .scanClientById!
+                                                  //       .data!
+                                                  //       .id,
+                                                  //   companyId: companyId,
+                                                  // );
                                                 },
                                                 child: Container(
                                                   height: 45.h,
