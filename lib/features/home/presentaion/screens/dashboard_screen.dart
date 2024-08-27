@@ -74,12 +74,8 @@ class DashBoardScreen extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                     ),
                                     defaultText(
-<<<<<<< HEAD
-                                      txt: cubit.totalSalesInDay.toString(),
-=======
                                       txt: cubit.totalSalesInDay
                                           .toStringAsFixed(2),
->>>>>>> 1b8c006 (file)
                                       color: Colors.white,
                                       fontSize: 30.sp,
                                       fontWeight: FontWeight.bold,
@@ -109,12 +105,8 @@ class DashBoardScreen extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                     ),
                                     defaultText(
-<<<<<<< HEAD
-                                      txt: cubit.allCashSalesToDay.toString(),
-=======
                                       txt: cubit.allCashSalesToDay
                                           .toStringAsFixed(2),
->>>>>>> 1b8c006 (file)
                                       color: Colors.white,
                                       fontSize: 30.sp,
                                       fontWeight: FontWeight.bold,
@@ -127,21 +119,13 @@ class DashBoardScreen extends StatelessWidget {
                         ],
                       ),
                       SizedBox(
-<<<<<<< HEAD
-                        height: 50.h,
-=======
                         height: 20.h,
->>>>>>> 1b8c006 (file)
                       ),
                       Row(
                         children: [
                           Expanded(
                             child: ControllerContainer(
-<<<<<<< HEAD
-                              title: cubit.totalSaless.toString(),
-=======
                               title: cubit.totalSaless.toStringAsFixed(2),
->>>>>>> 1b8c006 (file)
                               txt: 'اجمالي المعاملات ',
                             ),
                           ),
@@ -150,11 +134,7 @@ class DashBoardScreen extends StatelessWidget {
                           ),
                           Expanded(
                             child: ControllerContainer(
-<<<<<<< HEAD
-                              title: cubit.allCashSales.toString(),
-=======
                               title: cubit.allCashSales.toStringAsFixed(2),
->>>>>>> 1b8c006 (file)
                               txt: 'اجمالي المبيعات نقدي',
                             ),
                           ),
@@ -170,11 +150,7 @@ class DashBoardScreen extends StatelessWidget {
                         children: [
                           Expanded(
                             child: ControllerContainer(
-<<<<<<< HEAD
-                              title: cubit.allDebitSales.toString(),
-=======
                               title: cubit.allDebitSales.toStringAsFixed(2),
->>>>>>> 1b8c006 (file)
                               txt: 'اجمالي المبيعات بالدين',
                             ),
                           ),
@@ -183,11 +159,7 @@ class DashBoardScreen extends StatelessWidget {
                           ),
                           Expanded(
                             child: ControllerContainer(
-<<<<<<< HEAD
-                              title: cubit.allPayments.toString(),
-=======
                               title: cubit.allPayments.toStringAsFixed(2),
->>>>>>> 1b8c006 (file)
                               txt: 'اجمالي تسديد الدين',
                             ),
                           ),
@@ -200,23 +172,15 @@ class DashBoardScreen extends StatelessWidget {
                         children: [
                           Expanded(
                             child: ControllerContainer(
-<<<<<<< HEAD
-                              title: cubit.stillDebit.toString(),
-=======
                               color: AppColors.buttonRedColor,
                               title: cubit.stillDebit.toStringAsFixed(2),
->>>>>>> 1b8c006 (file)
                               txt: 'اجمالي المديونيه المتبقيه ',
                             ),
                           ),
                         ],
                       ),
                       SizedBox(
-<<<<<<< HEAD
                         height: 50.h,
-=======
-                        height: 20.h,
->>>>>>> 1b8c006 (file)
                       ),
                       Row(
                         children: [
@@ -237,12 +201,9 @@ class DashBoardScreen extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                     ),
                                     defaultText(
-<<<<<<< HEAD
-                                      txt: cubit.allDebitSalesToDay.toString(),
-=======
+                                     
                                       txt: cubit.allDebitSalesToDay
                                           .toStringAsFixed(2),
->>>>>>> 1b8c006 (file)
                                       color: Colors.white,
                                       fontSize: 30.sp,
                                       fontWeight: FontWeight.bold,
@@ -272,12 +233,8 @@ class DashBoardScreen extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                     ),
                                     defaultText(
-<<<<<<< HEAD
-                                      txt: cubit.allPaymentsToDay.toString(),
-=======
                                       txt: cubit.allPaymentsToDay
                                           .toStringAsFixed(2),
->>>>>>> 1b8c006 (file)
                                       color: Colors.white,
                                       fontSize: 30.sp,
                                       fontWeight: FontWeight.bold,
