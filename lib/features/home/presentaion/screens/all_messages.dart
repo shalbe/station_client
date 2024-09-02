@@ -75,8 +75,7 @@ class AllMessages extends StatelessWidget {
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.bold),
                                 subtitle: defaultText(
-                                    txt: cubit.AllMessage[index].message
-                                        .toString(),
+                                    txt: cubit.AllMessage[index].notes ?? '--',
                                     fontSize: 12.sp,
                                     color: AppColors.textColor,
                                     fontWeight: FontWeight.bold),

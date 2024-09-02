@@ -890,7 +890,7 @@ class _HomeState extends State<Home> {
                                                   fontWeight: FontWeight.bold),
                                               subtitle: defaultText(
                                                   txt: cubit
-                                                      .message[index].message
+                                                      .message[index].notes
                                                       .toString(),
                                                   fontSize: 12.sp,
                                                   color: AppColors.textColor,

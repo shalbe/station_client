@@ -36,8 +36,8 @@ class MessageData {
   String? type;
   String? status;
   String? carNumber;
-  String? message;
-  Null? notes;
+  // String? message;
+ String? notes;
   String? date;
   dynamic total;
   dynamic price;
@@ -55,7 +55,7 @@ class MessageData {
       this.type,
       this.status,
       this.carNumber,
-      this.message,
+      // this.message,
       this.notes,
       this.date,
       this.total,
@@ -74,7 +74,7 @@ class MessageData {
     type = json['type'];
     status = json['status'];
     carNumber = json['car_number'];
-    message = json['message'];
+    // message = json['message'];
     notes = json['notes'];
     date = json['date'];
     total = json['total'];
@@ -95,7 +95,7 @@ class MessageData {
     data['type'] = this.type;
     data['status'] = this.status;
     data['car_number'] = this.carNumber;
-    data['message'] = this.message;
+    // data['message'] = this.message;
     data['notes'] = this.notes;
     data['date'] = this.date;
     data['total'] = this.total;

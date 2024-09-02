@@ -79,7 +79,7 @@ class GetMessage extends StatelessWidget {
                         fontSize: 12,
                         fontWeight: FontWeight.bold),
                     defaultText(
-                        txt: '  ${data!.type}  ',
+                        txt: '  ${data!.materialName}  ',
                         fontSize: 10,
                         color: AppColors.textColor,
                         fontWeight: FontWeight.bold),
@@ -168,8 +168,8 @@ class GetMessage extends StatelessWidget {
                         fontSize: 12,
                         fontWeight: FontWeight.bold),
                     defaultText(
-                        txt: data!.message != null
-                            ? '  ${data!.message}  '
+                        txt: data!.notes != null
+                            ? '  ${data!.notes}  '
                             : ' ----',
                         fontSize: 10,
                         color: AppColors.textColor,
